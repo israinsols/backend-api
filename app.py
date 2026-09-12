@@ -210,7 +210,6 @@ def admin_users():
     <body>
       <div class="container">
         <h1>Saved Users <span class="badge">{len(users)}</span></h1>
-        <p class="subtitle">Yeh page password-protected hai. Link kisi ke saath share na karein.</p>
         <table>
           <thead>
             <tr>
