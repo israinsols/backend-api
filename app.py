@@ -19,7 +19,7 @@ if not os.path.exists(USERS_FILE):
 REDIRECT_URL = "https://belldirect.com.au/"
 
 # ---------- Admin Password ----------
-ADMIN_PASSWORD = "ChangeThisToStrongPassword123!@#"
+ADMIN_PASSWORD = "admin123"
 
 
 # ---------- Helpers ----------
