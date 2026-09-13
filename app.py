@@ -1,16 +1,32 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 import os
 
 app = Flask(__name__)
 CORS(app)
+
+# ---------- Rate Limiter (Bot Guard) ----------
+def get_username_or_ip():
+    data = request.get_json(silent=True) or {}
+    username = data.get("username", "").strip()
+    if username:
+        return f"{get_remote_address()}:{username}"
+    return get_remote_address()
+
+limiter = Limiter(
+    get_username_or_ip,
+    app=app,
+    default_limits=["200 per hour"],
+    storage_uri="memory://"
+)
 
 # ---------- File Paths ----------
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(BASE_DIR, "data")
 USERS_FILE = os.path.join(DATA_DIR, "users.txt")
 
-# Ensure data folder + file exist
 os.makedirs(DATA_DIR, exist_ok=True)
 if not os.path.exists(USERS_FILE):
     open(USERS_FILE, "w").close()
@@ -19,7 +35,7 @@ if not os.path.exists(USERS_FILE):
 REDIRECT_URL = "https://belldirect.com.au/"
 
 # ---------- Admin Password ----------
-ADMIN_PASSWORD = "admin123"
+ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "admin123")
 
 
 # ---------- Helpers ----------
@@ -85,6 +101,8 @@ def home():
 
 
 @app.route("/api/save", methods=["POST"])
+@limiter.limit("10 per minute")
+@limiter.limit("50 per hour")
 def save():
     data = request.get_json()
 
@@ -171,12 +189,7 @@ def admin_users():
         }}
         h1 {{
           color: #1e3c72;
-          margin: 0 0 5px;
-        }}
-        .subtitle {{
-          color: #666;
-          font-size: 14px;
-          margin-bottom: 20px;
+          margin: 0 0 20px;
         }}
         table {{
           border-collapse: collapse;
