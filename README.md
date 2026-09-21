@@ -41,20 +41,6 @@ python app.py
 
 The API listens on `http://localhost:5000` by default. Set `PORT` to use another port.
 
-## Environment variables
-
-| Variable | Default | Description |
-| --- | --- | --- |
-| `PORT` | `5000` | Port used by the development server |
-| `ADMIN_PASSWORD` | `admin123` | Access key for the admin users page |
-
-Example:
-
-```powershell
-$env:ADMIN_PASSWORD = "change-this-before-running"
-python app.py
-```
-
 ## Endpoints
 
 ### `GET /`
